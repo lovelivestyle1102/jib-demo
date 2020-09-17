@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+}
+
+group 'com.utry'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+//    testCompile "org.mockito:mockito-inline:+"
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}

@@ -1,0 +1,48 @@
+bootJar {
+    enabled = true
+}
+
+apply plugin: 'com.google.cloud.tools.jib'
+
+dependencies {
+    compile 'org.springframework.boot:spring-boot-starter-actuator'
+
+    compile group: 'io.micrometer', name: 'micrometer-registry-prometheus', version: '1.0.6'
+
+    compile 'org.springframework.boot:spring-boot-configuration-processor'
+
+    compile project(':utry-common')
+
+    compile project(':utry-quality-api')
+
+    compile project(':utry-quality-dao')
+}
+
+def imageName = 'utry-quality-service'
+
+jib {
+    from {
+        image = 'harbor.utry.com/library/openjdk:8-jdk-alpine'
+        auth {
+            username = 'admin'
+            password = 'Harbor12345'
+        }
+    }
+
+    to {
+        image = "harbor.utry.com/utry-work-demo/${imageName}:${project.version}"
+        auth {
+            username = 'admin'
+            password = 'Harbor12345'
+        }
+        allowInsecureRegistries = true
+    }
+
+
+
+    container {
+        mainClass = 'com.utry.UtryQualityServiceApplication'
+        ports = ['8888', '8188']
+
+    }
+}

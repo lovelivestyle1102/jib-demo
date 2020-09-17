@@ -1,0 +1,108 @@
+buildscript {
+    ext {
+        springBootVersion = '2.2.9.RELEASE'
+    }
+
+    repositories {
+        mavenLocal()
+        maven {
+            url 'https://maven.aliyun.com/repository/public/'
+        }
+        maven {
+            url 'https://maven.aliyun.com/repository/spring/'
+        }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:2.5.0"
+    }
+
+    allprojects {
+        gradle.projectsEvaluated {
+            allprojects {
+                jar { enabled = true}
+            }
+        }
+    }
+}
+
+plugins{
+    id 'org.springframework.boot' version '2.2.9.RELEASE' apply false
+    id "org.sonarqube" version "2.7" apply false
+    id 'com.google.cloud.tools.jib' version '2.5.0' apply false
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        maven {
+            url 'https://maven.aliyun.com/repository/public/'
+        }
+        maven {
+            url 'https://maven.aliyun.com/repository/spring/'
+        }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        mavenCentral()
+        jcenter()
+    }
+
+    group = 'com.utry'
+
+    version = '0.0.3-SNAPSHOT'
+
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'org.springframework.boot'  //使用springboot插件
+    apply plugin: 'io.spring.dependency-management'  //版本管理插件
+    apply plugin: 'org.sonarqube'
+
+
+    //默认不需要打成可执行jar包
+    bootJar {
+        enabled = false
+    }
+}
+
+subprojects{
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    repositories {
+        mavenLocal()
+        maven {
+            url 'https://maven.aliyun.com/repository/public/'
+        }
+        maven {
+            url 'https://maven.aliyun.com/repository/spring/'
+        }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        //compile 会进行依赖传递 iml 不会需要单独再引入
+        compileOnly 'org.projectlombok:lombok'
+
+        annotationProcessor 'org.projectlombok:lombok'
+
+        testImplementation('org.springframework.boot:spring-boot-starter-test') {
+            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        }
+    }
+
+}
